@@ -53,7 +53,7 @@ RUN apt-get update -y -qq && apt-get install -y --no-install-recommends \
     libmozjs185-dev \
     ssh \
     git-core \
-    supervisor \
+#    supervisor \
  && curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_4.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
  && echo 'deb-src https://deb.nodesource.com/node_4.x jessie main' >> /etc/apt/sources.list.d/nodesource.list \
@@ -100,8 +100,7 @@ RUN mkdir -p /var/log/supervisor/ \
  && chmod 755 /var/log/supervisor/
 
 WORKDIR /opt/couchdb
-EXPOSE 5984 4369 9100
+EXPOSE 5984
 VOLUME ["/opt/couchdb/data"]
 
-# Expose to the outside
-ENTRYPOINT ["/usr/bin/supervisord"]
+# ENTRYPOINT ["/usr/bin/supervisord"]
