@@ -44,7 +44,7 @@ ENV MAVEN_HOME /usr/share/maven
 ENV COUCHDB_VERSION 2.0.0
 
 # Download dev dependencies
-RUN apt-get update -y -qq && apt-get install -y --no-install-recommends \
+RUN apt-get update -y -qq && apt-get install -y --no-install-recommends --fix-missing \
     apt-transport-https \
     build-essential \
     erlang-dev \
@@ -103,4 +103,4 @@ WORKDIR /opt/couchdb
 EXPOSE 5984
 VOLUME ["/opt/couchdb/data"]
 
-# ENTRYPOINT ["/usr/bin/supervisord"]
+ENTRYPOINT ["/usr/bin/supervisord"]
