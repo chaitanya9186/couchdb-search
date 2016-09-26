@@ -1,39 +1,13 @@
 
-FROM debian:jessie
+# FROM debian:jessie
+
+FROM openjdk:7
 
 ENV COUCHDB_VERSION couchdb-search
 
 ENV MAVEN_VERSION 3.3.3
 
 RUN groupadd -r couchdb && useradd -d /opt/couchdb -g couchdb couchdb
-
-# download dependencies
-RUN apt-get update -y && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    erlang-nox \
-    erlang-reltool \
-    libicu52 \
-    libmozjs185-1.0 \
-    openssl \
-    libdbus-glib-1-2 \
-    libllvm3.5 \
-    openjdk-7-jdk \
-  && rm -rf /var/lib/apt/lists/*
-
-# grab gosu for easy step-down from root and tini for signal handling
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-  && curl -o /usr/local/bin/gosu -fSL "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture)" \
-  && curl -o /usr/local/bin/gosu.asc -fSL "https://github.com/tianon/gosu/releases/download/1.7/gosu-$(dpkg --print-architecture).asc" \
-  && gpg --verify /usr/local/bin/gosu.asc \
-  && rm /usr/local/bin/gosu.asc \
-  && chmod +x /usr/local/bin/gosu \
-  && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
-  && curl -o /usr/local/bin/tini -fSL "https://github.com/krallin/tini/releases/download/v0.9.0/tini" \
-  && curl -o /usr/local/bin/tini.asc -fSL "https://github.com/krallin/tini/releases/download/v0.9.0/tini.asc" \
-  && gpg --verify /usr/local/bin/tini.asc \
-  && rm /usr/local/bin/tini.asc \
-  && chmod +x /usr/local/bin/tini
 
 RUN curl -fsSL http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share \
   && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
@@ -53,7 +27,16 @@ RUN apt-get update -y -qq && apt-get install -y --no-install-recommends --fix-mi
     libmozjs185-dev \
     ssh \
     git-core \
-#    supervisor \
+    supervisor \
+    ca-certificates \
+    curl \
+    erlang-nox \
+    erlang-reltool \
+    libicu52 \
+    libmozjs185-1.0 \
+    openssl \
+    libdbus-glib-1-2 \
+    openjdk-7-jdk \
  && curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_4.x jessie main' > /etc/apt/sources.list.d/nodesource.list \
  && echo 'deb-src https://deb.nodesource.com/node_4.x jessie main' >> /etc/apt/sources.list.d/nodesource.list \
