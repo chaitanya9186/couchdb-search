@@ -49,8 +49,7 @@ RUN apt-get update -y -qq && apt-get install -y --no-install-recommends --fix-mi
  && cd couchdb \
  # Build the release and install into /opt
  && ./configure --disable-docs \
- && make release \
- && mv /usr/src/couchdb/rel/couchdb /opt/ \
+ && make \
  # Cleanup build detritus
  && cd /usr/src \
  && git clone https://github.com/cloudant-labs/clouseau \
@@ -68,22 +67,20 @@ RUN apt-get update -y -qq && apt-get install -y --no-install-recommends --fix-mi
     perl \
  && apt-get autoremove -y && apt-get clean \
  && apt-get install -y libicu52 --no-install-recommends \
- && rm -rf /var/lib/apt/lists/* /usr/lib/node_modules /usr/src/couchdb*
+ && rm -rf /var/lib/apt/lists/* /usr/lib/node_modules
 
 # Add configuration
-COPY local.ini /opt/couchdb/etc/
-COPY vm.args /opt/couchdb/etc/
+COPY local.ini /usr/src/couchdb/rel/overlay/etc/
+COPY vm.args /usr/src/couchdb/rel/overlay/etc/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Setup directories and permissions
-RUN mkdir -p /opt/couchdb/data /opt/couchdb/etc/local.d /opt/couchdb/etc/default.d \
- && chown -R couchdb:couchdb /opt/couchdb/
+RUN chown -R couchdb:couchdb /usr/src/couchdb/
 
 RUN mkdir -p /var/log/supervisor/ \
  && chmod 755 /var/log/supervisor/
 
-WORKDIR /opt/couchdb
+WORKDIR /usr/src/couchdb
 EXPOSE 5984
-VOLUME ["/opt/couchdb/data"]
 
 ENTRYPOINT ["/usr/bin/supervisord"]
